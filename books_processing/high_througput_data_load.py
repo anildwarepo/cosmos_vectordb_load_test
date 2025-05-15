@@ -6,12 +6,12 @@ import pandas as pd
 import asyncio
 import aiofiles
 from dotenv import load_dotenv
-from azure.identity.aio import DefaultAzureCredential, get_bearer_token_provider
-from openai import AsyncAzureOpenAI, RateLimitError
+from azure.identity.aio import DefaultAzureCredential
 from azure.cosmos.aio import CosmosClient
 from azure.cosmos import PartitionKey, exceptions
-import backoff
+
 from asyncio import Semaphore
+import books_processing.openai_helper as openai_helper
 
 load_dotenv()
 
@@ -24,16 +24,7 @@ MAX_BATCH_BYTES = 2 * 1024 * 1024
 PARTITION_KEY_VALUE = "books_items"
 STAGING_FILE = "staging_embeddings.jsonl"
 
-# OpenAI Client
-aoai_credential = DefaultAzureCredential()
-token_provider = get_bearer_token_provider(aoai_credential, "https://cognitiveservices.azure.com/.default")
-aoai_client = AsyncAzureOpenAI(
-    api_version="2024-02-15-preview",
-    azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
-    azure_ad_token_provider=token_provider
-)
-embedding_model = "text-embedding-ada-002"
-encoding = tiktoken.encoding_for_model(embedding_model)
+encoding = tiktoken.encoding_for_model(openai_helper.embedding_model)
 
 vector_embedding_policy = {
     "vectorEmbeddings": [
@@ -118,9 +109,6 @@ vector_indexing_policy_diskANN = {
     ]
 }
 
-@backoff.on_exception(backoff.constant, RateLimitError, interval=60, max_tries=10)
-async def get_embeddings(texts):
-    return await aoai_client.embeddings.create(input=texts, model=embedding_model)
 
 
 async def embed_batch(batch_files, csv_path, semaphore):
@@ -144,7 +132,7 @@ async def embed_batch(batch_files, csv_path, semaphore):
             return []
 
         try:
-            embeddings = await get_embeddings(texts)
+            embeddings = await openai_helper.get_embeddings(texts)
             return [
                 {
                     "id": str(uuid.uuid4()),
