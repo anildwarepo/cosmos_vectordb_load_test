@@ -18,4 +18,6 @@ embedding_model = "text-embedding-ada-002"
 async def get_embeddings(texts, model=embedding_model):
     embeddings = await aoai_client.embeddings.create(input=texts, model=model)
     return embeddings.data[0].embedding
-    
+
+
+
