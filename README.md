@@ -2,8 +2,30 @@
 - Python 3.11 or higher if using venv
 - Azure Subscription with Azure Cosmos DB provisioned
 - Enable Vector Search and Full Text Search on your Azure Cosmos DB account
+- Azure CLI installed. If you don't have it installed, please follow the [Azure CLI installation guide](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli).
 - Azure OpenAI Service provisioned with embedding model - text-embedding-ada-002
 - Please review [Azure Cosmos DB Vector Search](https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/vector-search) documentation for more details.
+
+
+
+## Authentication to Azure Cosmos DB and Azure OpenAI Service
+
+Cosmos DB and Azure OpenAI Service authentication is done using the `azure-identity` library. The code uses `DefaultAzureCredential` which supports multiple authentication methods including environment variables, managed identity, and Azure CLI.
+
+For simplicity, you can use az login to authenticate your Azure CLI session, which will allow the `DefaultAzureCredential` to pick up the credentials automatically.
+
+
+## Endpoints
+
+Update the .env.example file with your Azure Cosmos DB and Azure OpenAI Service endpoints and keys. Rename the file to `.env` after updating it.
+
+
+```bash
+AZURE_OPENAI_ENDPOINT=https://<your-openai-resource-name>.openai.azure.com/
+AZURE_OPENAI_EMBEDDING_DEPLOYMENT=text-embedding-ada-002
+AZURE_COSMOSDB_ENDPOINT=https://<your-cosmosdb-account-name>.documents.azure.com:443/
+```
+
 
 
 ## Notes about Vector Search in Azure Cosmos DB

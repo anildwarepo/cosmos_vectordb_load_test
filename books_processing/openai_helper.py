@@ -12,7 +12,7 @@ aoai_client = AsyncAzureOpenAI(
     azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
     azure_ad_token_provider=token_provider
 )
-embedding_model = "text-embedding-ada-002"
+embedding_model = os.environ["AZURE_OPENAI_EMBEDDING_DEPLOYMENT"]
 
 @backoff.on_exception(backoff.constant, RateLimitError, interval=60, max_tries=10)
 async def get_embeddings(texts, model=embedding_model):
