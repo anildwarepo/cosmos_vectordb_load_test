@@ -11,7 +11,7 @@ from azure.cosmos.aio import CosmosClient
 from azure.cosmos import PartitionKey, exceptions
 
 from asyncio import Semaphore
-import books_processing.openai_helper as openai_helper
+import openai_helper as openai_helper
 
 load_dotenv()
 
