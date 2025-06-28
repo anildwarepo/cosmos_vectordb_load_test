@@ -1,0 +1,11 @@
+python-dotenv
+azure-search-documents==11.6.0b4
+azure-identity
+openai
+azure-ai-documentintelligence
+tiktoken
+azure-cosmos
+pandas
+backoff
+aiohttp
+aiofiles
